@@ -1,5 +1,6 @@
 $(document).ready(function() {
   let displayVal = "0";
+  let checkDecimal = "0";
   let operand1 = null;
   let operator = null;
   let isOperatorClicked = false;
@@ -13,21 +14,29 @@ $(document).ready(function() {
       if (displayVal === '0') {
         if (numVal === '.') {
           displayVal += numVal;
+          checkDecimal += numVal;
         } else if (numVal === '0' || numVal === '00') {
           // 何も行わない
         } else {
           displayVal = numVal;
+          checkDecimal = numVal;
         }
       } else {
-        if (numVal === '.' && displayVal.includes('.')) {
+        if (numVal === '.' && checkDecimal.includes('.')) {
           // 何も行わない
         } else {
           displayVal += numVal;
+          checkDecimal += numVal;
         }
       }
     } else {
-      displayVal += numVal;
-      isOperatorClicked = false;
+        checkDecimal = "0";
+        if (numVal === '.' || numVal === '00') {
+          // 何も行わない
+        } else {
+          displayVal += numVal;
+          isOperatorClicked = false;
+        }
     }
     $('#display').text(displayVal);
   });
@@ -37,19 +46,19 @@ $(document).ready(function() {
 
     if (operand1 !== null && !isOperatorClicked) {
       displayVal += currentOperator;
-      $('#display').text(displayVal);
-    }
-
-    if (operator !== null && !isOperatorClicked) {
+      $('#display').text(displayVal);    
       operand1 = calculate(operand1, parseFloat(displayVal.slice(displayVal.indexOf(operator) + 1)), operator);
       displayVal = operand1.toString() + currentOperator;
+      $('#display').text(displayVal);
+    } else if (operand1 !== null && isOperatorClicked) {
+      displayVal = displayVal.slice(0, -1) + currentOperator;
       $('#display').text(displayVal);
     } else {
       operand1 = parseFloat(displayVal);
       displayVal += currentOperator;
       $('#display').text(displayVal);
     }
-
+    
     operator = currentOperator;
     isOperatorClicked = true;
   });
