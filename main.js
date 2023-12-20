@@ -13,45 +13,45 @@ $(document).ready(function() {
       if (displayVal === '0') {
         if (numVal === '.') {
           displayVal += numVal;
-        } else if (numVal ==='0' || numVal ==='00') { 
-          //何も行わない  
+        } else if (numVal === '0' || numVal === '00') {
+          // 何も行わない
         } else {
           displayVal = numVal;
         }
       } else {
         if (numVal === '.' && displayVal.includes('.')) {
-          //何も行わない  
+          // 何も行わない
         } else {
           displayVal += numVal;
         }
       }
+    } else {
+      displayVal += numVal;
+      isOperatorClicked = false;
     }
-    if (isOperatorClicked) {
-      if (numVal === '.' || numVal === '00') {
-        //何も行わない  
-      } else {
-        displayVal = numVal;
-        isOperatorClicked = false;
-      }
-    } 
     $('#display').text(displayVal);
   });
 
   $('.operator').on('click', function() {
     const currentOperator = $(this).val();
 
-    $('#display').text(currentOperator);
+    if (operand1 !== null && !isOperatorClicked) {
+      displayVal += currentOperator;
+      $('#display').text(displayVal);
+    }
 
-      if (operator !== null && !isOperatorClicked) {
-        operand1 = calculate(operand1, parseFloat(displayVal), operator);
-        displayVal = operand1.toString();
-        $('#display').text(displayVal);
-      } else {
-        operand1 = parseFloat(displayVal);
-      }
-  
-      operator = currentOperator;
-      isOperatorClicked = true;
+    if (operator !== null && !isOperatorClicked) {
+      operand1 = calculate(operand1, parseFloat(displayVal.slice(displayVal.indexOf(operator) + 1)), operator);
+      displayVal = operand1.toString() + currentOperator;
+      $('#display').text(displayVal);
+    } else {
+      operand1 = parseFloat(displayVal);
+      displayVal += currentOperator;
+      $('#display').text(displayVal);
+    }
+
+    operator = currentOperator;
+    isOperatorClicked = true;
   });
 
   $('#clear').on('click', function() {
@@ -64,7 +64,8 @@ $(document).ready(function() {
 
   $('#calculate').on('click', function() {
     if (operator !== null) {
-      const operand2 = parseFloat(displayVal);
+      const operand2 = parseFloat(displayVal.slice(displayVal.indexOf(operator) + 1));
+      displayVal = operand1.toString() + operator + operand2.toString();
       displayVal = calculate(operand1, operand2, operator).toString();
       $('#display').text(displayVal);
       operand1 = null;
