@@ -40,6 +40,8 @@ $(document).ready(function() {
   $('.operator').on('click', function() {
     const currentOperator = $(this).val();
 
+    $('#display').text(currentOperator);
+
       if (operator !== null && !isOperatorClicked) {
         operand1 = calculate(operand1, parseFloat(displayVal), operator);
         displayVal = operand1.toString();
